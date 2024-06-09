@@ -36,7 +36,7 @@ const Clicker = () => {
   const buyEnergyCharger = () => {
     if (coins >= energyChargerCost){
         setCoins(coins - energyChargerCost);
-        setEnergyEarn((prev) => prev * 2);
+        setEnergyEarn(energyEarn * 2);
         setEnergyChargerCost((prev) => prev * 2);
     }
   };
@@ -54,11 +54,11 @@ const Clicker = () => {
   //логика увеличения оставшихся кликов в секунду и оно должно быть не больше 1000
   useEffect(() => {
     const interval = setInterval(() => {
-      setCoinsToEarn((prev) => (prev < 1000 ? prev + energyEarn : 1000)); //здесь макс кол-во (1000) и прибавляется energyEarn
+      setCoinsToEarn((coinsToEarn) => (coinsToEarn < 1000 ? coinsToEarn + energyEarn : 1000)); //здесь макс кол-во (1000) и прибавляется energyEarn
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [energyEarn]);
 
   return (
     <div>
@@ -66,6 +66,7 @@ const Clicker = () => {
       <p>Coins to earn: {coinsToEarn}</p>
       <p>Coins: {coins}</p>
       <p>click multiplier: {multiTapCount}</p>
+      <p>Energy earning speed: {energyEarn}</p>
       <Button onClick={handleBuyMultiTap}>Buy Multi Tap for {multiTapCost} coins</Button>
       <span style={{ marginRight: '10px' }}></span>
       <Button onClick={buyEnergyCharger}>Buy charging speed for {energyChargerCost} coins</Button>
