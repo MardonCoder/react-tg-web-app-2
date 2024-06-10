@@ -21,6 +21,14 @@ const Clicker = () => {
       setCoinsToEarn((prev) => prev - multiTapCount); //уменьшение оставшихся кликов при нажатие
     };
   };
+
+  const handleTouchStart = (e) => {
+    e.preventDefault(); // Предотвращаем нежелательные действия браузера
+    const touches = e.touches;
+    for (let i = 0; i < touches.length; i++) {
+      handleClick();
+    }
+  };
 //_____________________________________________________________________________________________________
 
 
@@ -73,7 +81,7 @@ const Clicker = () => {
       
       
       <div className="coin">
-        <img src={star} alt="Clicker" width={256} height={256} onClick={handleClick} onTouchStart={handleClick} style={{ cursor: 'pointer' }} />
+        <img src={star} alt="Clicker" width={256} height={256} onClick={handleClick} onTouchStart={handleTouchStart} style={{ cursor: 'pointer' }} />
       </div>
 
       <Button onClick={handleBuyMultiTap}>Buy Multi Tap for {multiTapCost} coins</Button>
