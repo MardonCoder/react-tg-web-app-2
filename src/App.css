@@ -2,9 +2,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: .3s all;
 }
 
 body {
+  height: 100vh;
   background: var(--tg-theme-bg-color);
   color: var(--tg-theme-text-color);
 }

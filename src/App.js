@@ -16,7 +16,6 @@ function App() {
     <div className="App">
       <Header />
       <Clicker />
-      <button onClick={onToggleButton}>toggle</button>
     </div>
   );
 }

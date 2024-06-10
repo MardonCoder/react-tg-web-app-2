@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Clicker.css'
 import Button from '../Button/Button';
+import star from '../assets/star.png';
 
 const Clicker = () => {
   const [coins, setCoins] = useState(0); //количество монет
@@ -72,8 +73,11 @@ const Clicker = () => {
       <Button onClick={buyEnergyCharger}>Buy charging speed for {energyChargerCost} coins</Button>
       <span style={{ marginRight: '10px' }}></span>
       <Button onClick={plus1000coins}>+1000 coins</Button>
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk3Ylt99YuoPEDlF838eaMID6VsHgQiO_eGg&s"
-      alt="Clicker" onClick={handleClick} style={{ cursor: 'pointer' }} />
+
+      <div className="coin">
+        <img src={star} alt="Clicker" width={256} height={256} onClick={handleClick} style={{ cursor: 'pointer' }} />
+      </div>
+      
     </div>
   );
 };
