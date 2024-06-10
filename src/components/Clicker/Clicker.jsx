@@ -71,16 +71,18 @@ const Clicker = () => {
         <p>Energy earning speed: {energyEarn}</p>
       </div>
       
+      
+      <div className="coin">
+        <img src={star} alt="Clicker" width={256} height={256} onClick={handleClick} style={{ cursor: 'pointer' }} />
+      </div>
+
       <Button onClick={handleBuyMultiTap}>Buy Multi Tap for {multiTapCost} coins</Button>
       <span style={{ marginRight: '10px' }}></span>
       <Button onClick={buyEnergyCharger}>Buy charging speed for {energyChargerCost} coins</Button>
       <span style={{ marginRight: '10px' }}></span>
       <Button onClick={plus1000coins}>+1000 coins</Button>
 
-      <div className="coin">
-        <img src={star} alt="Clicker" width={256} height={256} onClick={handleClick} style={{ cursor: 'pointer' }} />
-      </div>
-      
+
     </div>
   );
 };

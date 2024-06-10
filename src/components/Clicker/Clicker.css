@@ -4,7 +4,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+
 }
 
 .coin img:active{
@@ -12,6 +12,8 @@
 }
 
 .text {
+    text-align: center;
+    margin-top: 10px; /* Расстояние между каждым новым текстом */
     font-size: 1.3em;
     color: var(--tg-theme-text-color);
     font-family: "Poppins", sans-serif;
