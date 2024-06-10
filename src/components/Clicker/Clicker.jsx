@@ -73,7 +73,7 @@ const Clicker = () => {
       
       
       <div className="coin">
-        <img src={star} alt="Clicker" width={256} height={256} onClick={handleClick} style={{ cursor: 'pointer' }} />
+        <img src={star} alt="Clicker" width={256} height={256} onClick={handleClick} onTouchStart={handleClick} style={{ cursor: 'pointer' }} />
       </div>
 
       <Button onClick={handleBuyMultiTap}>Buy Multi Tap for {multiTapCost} coins</Button>
