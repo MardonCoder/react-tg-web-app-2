@@ -63,11 +63,14 @@ const Clicker = () => {
 
   return (
     <div>
-      <h1>Clicker App</h1>
-      <p>Coins to earn: {coinsToEarn}</p>
-      <p>Coins: {coins}</p>
-      <p>click multiplier: {multiTapCount}</p>
-      <p>Energy earning speed: {energyEarn}</p>
+      <div className='text'>
+        <h1>Clicker App</h1>
+        <p>Coins to earn: {coinsToEarn}</p>
+        <p>Coins: {coins}</p>
+        <p>click multiplier: {multiTapCount}</p>
+        <p>Energy earning speed: {energyEarn}</p>
+      </div>
+      
       <Button onClick={handleBuyMultiTap}>Buy Multi Tap for {multiTapCost} coins</Button>
       <span style={{ marginRight: '10px' }}></span>
       <Button onClick={buyEnergyCharger}>Buy charging speed for {energyChargerCost} coins</Button>
