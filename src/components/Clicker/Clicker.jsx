@@ -29,16 +29,16 @@ const Clicker = () => {
   const handleBuyMultiTap = () => { //система покупки мультитапа
     if (coins >= multiTapCost) {
       setCoins(coins - multiTapCost); //уменьшение монет при покупке
-      setMultiTapCount((prev) => prev * 2); //удвоение накликивания при покупке
-      setMultiTapCost((prev) => prev * 2); //удвоение цены при покупке
+      setMultiTapCount((prev) => prev + 1); //удвоение накликивания при покупке
+      setMultiTapCost((prev) => prev + 150); //удвоение цены при покупке
     }
   };
 
   const buyEnergyCharger = () => {
     if (coins >= energyChargerCost){
         setCoins(coins - energyChargerCost);
-        setEnergyEarn(energyEarn * 2);
-        setEnergyChargerCost((prev) => prev * 2);
+        setEnergyEarn(energyEarn + 1);
+        setEnergyChargerCost((prev) => prev + 150);
     }
   };
 //______________________________________________________________________________________________________
