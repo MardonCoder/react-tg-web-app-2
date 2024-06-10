@@ -1,69 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import './Clicker.css'
+import './Clicker.css';
 import Button from '../Button/Button';
 import star from '../assets/star.png';
 
 const Clicker = () => {
-  const [coins, setCoins] = useState(0); //количество монет
-  const [coinsToEarn, setCoinsToEarn] = useState(1000); //количество оставшихся кликов
+  const [coins, setCoins] = useState(0); // Количество монет
+  const [coinsToEarn, setCoinsToEarn] = useState(1000); // Количество оставшихся кликов
 
-  const [multiTapCount, setMultiTapCount] = useState(1); //удваиватель кликов
-  const [multiTapCost, setMultiTapCost] = useState(100); //покупка удваивателя с указаной начальной ценой
+  const [multiTapCount, setMultiTapCount] = useState(1); // Удваиватель кликов
+  const [multiTapCost, setMultiTapCost] = useState(100); // Покупка удваивателя с указанной начальной ценой
 
-  const [energyEarn, setEnergyEarn] = useState(1); //добываемая энергия в секунду
+  const [energyEarn, setEnergyEarn] = useState(1); // Добываемая энергия в секунду
   const [energyChargerCost, setEnergyChargerCost] = useState(100);
 
-
-//КЛИКЕР_______________________________________________________________________________________________
-  const handleClick = () => { //система кликера
-    if ((coinsToEarn - multiTapCount) >= 0){
-      setCoins(coins + multiTapCount); //увеличение монет при клике
-      setCoinsToEarn((prev) => prev - multiTapCount); //уменьшение оставшихся кликов при нажатие
-    };
+  // Обработчик клика
+  const handleClick = () => {
+    if ((coinsToEarn - multiTapCount) >= 0) {
+      setCoins(coins + multiTapCount); // Увеличение монет при клике
+      setCoinsToEarn((prev) => prev - multiTapCount); // Уменьшение оставшихся кликов при нажатии
+    }
   };
 
+  // Обработчик касания
   const handleTouchStart = (e) => {
     e.preventDefault(); // Предотвращаем нежелательные действия браузера
     const touches = e.touches;
     for (let i = 0; i < touches.length; i++) {
-      handleClick();
+      handleClick(); // Вызываем handleClick для каждого касания
     }
   };
-//_____________________________________________________________________________________________________
 
-
-
-//МАГАЗИН______________________________________________________________________________________________
-  const handleBuyMultiTap = () => { //система покупки мультитапа
+  // Обработчик покупки мультитапа
+  const handleBuyMultiTap = () => {
     if (coins >= multiTapCost) {
-      setCoins(coins - multiTapCost); //уменьшение монет при покупке
-      setMultiTapCount((prev) => prev + 1); //удвоение накликивания при покупке
-      setMultiTapCost((prev) => prev * 2); //удвоение цены при покупке
+      setCoins(coins - multiTapCost); // Уменьшение монет при покупке
+      setMultiTapCount((prev) => prev + 1); // Увеличение накликивания при покупке
+      setMultiTapCost((prev) => prev * 2); // Увеличение цены при покупке
     }
   };
 
+  // Обработчик покупки зарядного устройства энергии
   const buyEnergyCharger = () => {
-    if (coins >= energyChargerCost){
-        setCoins(coins - energyChargerCost);
-        setEnergyEarn(energyEarn + 1);
-        setEnergyChargerCost((prev) => prev * 2);
+    if (coins >= energyChargerCost) {
+      setCoins(coins - energyChargerCost);
+      setEnergyEarn(energyEarn + 1);
+      setEnergyChargerCost((prev) => prev * 2);
     }
   };
-//______________________________________________________________________________________________________
 
-
-
-//ЧИТ_ПАНЕЛЬ____________________________________________________________________________________________
-  const plus1000coins = () => { //даёт 1000 монет
-    setCoins(coins+1000);
+  // Чит-панель: добавляет 1000 монет
+  const plus1000coins = () => {
+    setCoins(coins + 1000);
   };
-//______________________________________________________________________________________________________
 
-
-  //логика увеличения оставшихся кликов в секунду и оно должно быть не больше 1000
+  // Логика увеличения оставшихся кликов в секунду
   useEffect(() => {
     const interval = setInterval(() => {
-      setCoinsToEarn((coinsToEarn) => (coinsToEarn < 1000 ? coinsToEarn + energyEarn : 1000)); //здесь макс кол-во (1000) и прибавляется energyEarn
+      setCoinsToEarn((coinsToEarn) => (coinsToEarn < 1000 ? coinsToEarn + energyEarn : 1000));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -75,13 +68,20 @@ const Clicker = () => {
         <h1>Clicker App</h1>
         <p>Coins to earn: {coinsToEarn}</p>
         <p>Coins: {coins}</p>
-        <p>click multiplier: {multiTapCount}</p>
+        <p>Click multiplier: {multiTapCount}</p>
         <p>Energy earning speed: {energyEarn}</p>
       </div>
-      
-      
+
       <div className="coin">
-        <img src={star} alt="Clicker" width={256} height={256} onClick={handleClick} onTouchStart={handleTouchStart} style={{ cursor: 'pointer' }} />
+        <img
+          src={star}
+          alt="Clicker"
+          width={256}
+          height={256}
+          onClick={handleClick}
+          onTouchStart={handleTouchStart}
+          style={{ cursor: 'pointer' }}
+        />
       </div>
 
       <Button onClick={handleBuyMultiTap}>Buy Multi Tap for {multiTapCost} coins</Button>
@@ -89,8 +89,6 @@ const Clicker = () => {
       <Button onClick={buyEnergyCharger}>Buy charging speed for {energyChargerCost} coins</Button>
       <span style={{ marginRight: '10px' }}></span>
       <Button onClick={plus1000coins}>+1000 coins</Button>
-
-
     </div>
   );
 };
