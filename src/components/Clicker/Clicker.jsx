@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './Clicker.css';
 import Button from '../Button/Button';
 import star from '../assets/star.png';
+import { useTelegram } from '../../hooks/useTelegram';
 
 const Clicker = () => {
+  const { userID } = useTelegram();
   const [coins, setCoins] = useState(0); // количество монет
   const [coinsToEarn, setCoinsToEarn] = useState(1000); // количество оставшихся кликов
 
@@ -85,6 +87,10 @@ const Clicker = () => {
       <Button onClick={buyEnergyCharger}>Buy charging speed for {energyChargerCost} coins</Button>
       <span style={{ marginRight: '10px' }}></span>
       <Button onClick={plus1000coins}>+1000 coins</Button>
+
+      <div className="user-id">
+        <p>User ID: {userID}</p> {/* Выводим ID пользователя */}
+      </div>
     </div>
   );
 };
