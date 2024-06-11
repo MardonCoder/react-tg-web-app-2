@@ -78,14 +78,14 @@ const Clicker = () => {
           alt="Clicker"
           width={256}
           height={256}
-          onClick={(e) => {
-            if (e.type === 'click') {
-              handleClick();
-            }
-          }}
           onTouchStart={(e) => {
             if (e.type === 'touchstart') {
               handleTouchStart(e);
+            }
+          }}
+          onClick={(e) => {
+            if (e.type === 'click' || !e.touches) {
+              handleClick();
             }
           }}
           style={{ cursor: 'pointer' }}
