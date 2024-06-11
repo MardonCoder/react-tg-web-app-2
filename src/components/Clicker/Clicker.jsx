@@ -13,6 +13,7 @@ const Clicker = () => {
     const [energyEarn, setEnergyEarn] = useState(1);
     const [energyChargerCost, setEnergyChargerCost] = useState(100);
   
+    // Инициализация данных пользователя при загрузке
     useEffect(() => {
       if (userData) {
         setCoins(userData.coins);
@@ -35,13 +36,10 @@ const Clicker = () => {
       });
     };
   
+    // Сохранение данных каждые 10 секунд и при выходе из приложения
     useEffect(() => {
-      // Сохранение данных каждые 10 секунд
-      const interval = setInterval(() => {
-        saveData();
-      }, 10000);
+      const interval = setInterval(saveData, 10000);
   
-      // Сохранение данных при выходе из приложения
       const handleBeforeUnload = (event) => {
         saveData();
       };
@@ -56,90 +54,73 @@ const Clicker = () => {
   
     const handleClick = () => {
       if ((coinsToEarn - multiTapCount) >= 0) {
-        const newCoins = coins + multiTapCount;
-        const newCoinsToEarn = coinsToEarn - multiTapCount;
-        setCoins(newCoins);
-      setCoinsToEarn(newCoinsToEarn);
-      saveData();
-    }
-  };
+        setCoins(coins + multiTapCount);
+        setCoinsToEarn(coinsToEarn - multiTapCount);
+      }
+    };
+  
+    const handleTouchEnd = (e) => {
+      e.preventDefault();
+      handleClick();
+    };
+  
+    const handleBuyMultiTap = () => {
+      if (coins >= multiTapCost) {
+        setCoins(coins - multiTapCost);
+        setMultiTapCount(multiTapCount + 1);
+        setMultiTapCost(multiTapCost * 2);
+      }
+    };
+  
+    const buyEnergyCharger = () => {
+      if (coins >= energyChargerCost) {
+        setCoins(coins - energyChargerCost);
+        setEnergyEarn(energyEarn + 1);
+        setEnergyChargerCost(energyChargerCost * 2);
+      }
+    };
 
-  const handleTouchEnd = (e) => {
-    e.preventDefault();
-    handleClick();
-  };
-
-  const handleBuyMultiTap = () => {
-    if (coins >= multiTapCost) {
-      const newCoins = coins - multiTapCost;
-      const newMultiTapCount = multiTapCount + 1;
-      const newMultiTapCost = multiTapCost * 2;
-      setCoins(newCoins);
-      setMultiTapCount(newMultiTapCount);
-      setMultiTapCost(newMultiTapCost);
-      saveData();
-    }
-  };
-
-  const buyEnergyCharger = () => {
-    if (coins >= energyChargerCost) {
-      const newCoins = coins - energyChargerCost;
-      const newEnergyEarn = energyEarn + 1;
-      const newEnergyChargerCost = energyChargerCost * 2;
-      setCoins(newCoins);
-      setEnergyEarn(newEnergyEarn);
-      setEnergyChargerCost(newEnergyChargerCost);
-      saveData();
-    }
-  };
-
-  const plus1000coins = () => {
-    const newCoins = coins + 1000;
-    setCoins(newCoins);
-    saveData();
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCoinsToEarn((coinsToEarn) => {
-        const newCoinsToEarn = coinsToEarn < 1000 ? coinsToEarn + energyEarn : 1000;
-        saveUserData({ coinsToEarn: newCoinsToEarn });
-        return newCoinsToEarn;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [energyEarn, saveUserData]);
-
-  return (
-    <div>
-      <div className='text'>
-        <h1>Clicker App</h1>
-        <p>Coins to earn: {coinsToEarn}</p>
-        <p>Coins: {coins}</p>
-        <p>Click multiplier: {multiTapCount}</p>
-        <p>Energy earning speed: {energyEarn}</p>
-      </div>
-
-      <div className="coin">
-        <img
-          src={star}
-          alt="Clicker"
-          width={256}
-          height={256}
-          onClick={handleClick}
-          onTouchEnd={handleTouchEnd}
-          style={{ cursor: 'pointer' }}
-        />
-      </div>
-
-      <Button onClick={handleBuyMultiTap}>Buy Multi Tap for {multiTapCost} coins</Button>
-      <span style={{ marginRight: '10px' }}></span>
-      <Button onClick={buyEnergyCharger}>Buy charging speed for {energyChargerCost} coins</Button>
-      <span style={{ marginRight: '10px' }}></span>
-      <Button onClick={plus1000coins}>+1000 coins</Button>
-    </div>
-  );
-};
-
-export default Clicker;
+    const plus1000coins = () => {
+        setCoins(coins + 1000);
+      };
+    
+      useEffect(() => {
+        const interval = setInterval(() => {
+          setCoinsToEarn((coinsToEarn) => (coinsToEarn < 1000 ? coinsToEarn + energyEarn : 1000));
+        }, 1000);
+    
+        return () => clearInterval(interval);
+      }, [energyEarn]);
+    
+      return (
+        <div>
+          <div className='text'>
+            <h1>Clicker App</h1>
+            <p>Coins to earn: {coinsToEarn}</p>
+            <p>Coins: {coins}</p>
+            <p>Click multiplier: {multiTapCount}</p>
+            <p>Energy earning speed: {energyEarn}</p>
+          </div>
+    
+          <div className="coin">
+            <img
+              src={star}
+              alt="Clicker"
+              width={256}
+              height={256}
+              onClick={handleClick}
+              onTouchEnd={handleTouchEnd}
+              style={{ cursor: 'pointer' }}
+            />
+          </div>
+    
+          <Button onClick={handleBuyMultiTap}>Buy Multi Tap for {multiTapCost} coins</Button>
+          <span style={{ marginRight: '10px' }}></span>
+          <Button onClick={buyEnergyCharger}>Buy charging speed for {energyChargerCost} coins</Button>
+          <span style={{ marginRight: '10px' }}></span>
+          <Button onClick={plus1000coins}>+1000 coins</Button>
+        </div>
+      );
+    };
+    
+    export default Clicker;
