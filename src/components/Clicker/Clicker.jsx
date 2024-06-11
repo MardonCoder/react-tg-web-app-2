@@ -13,16 +13,22 @@ const Clicker = () => {
   const [energyEarn, setEnergyEarn] = useState(1); // Добываемая энергия в секунду
   const [energyChargerCost, setEnergyChargerCost] = useState(100);
 
+  const [isTouch, setIsTouch] = useState(false); // Состояние для отслеживания сенсорного события
+
   // Обработчик клика
   const handleClick = () => {
-    if ((coinsToEarn - multiTapCount) >= 0) {
-      setCoins(coins + multiTapCount); // Увеличение монет при клике
-      setCoinsToEarn((prev) => prev - multiTapCount); // Уменьшение оставшихся кликов при нажатии
+    if (!isTouch) {
+      if ((coinsToEarn - multiTapCount) >= 0) {
+        setCoins(coins + multiTapCount); // Увеличение монет при клике
+        setCoinsToEarn((prev) => prev - multiTapCount); // Уменьшение оставшихся кликов при нажатии
+      }
     }
+    setIsTouch(false); // Сброс состояния после клика
   };
 
   // Обработчик касания
   const handleTouchStart = (e) => {
+    setIsTouch(true); // Установка состояния для сенсорного события
     e.preventDefault(); // Предотвращаем нежелательные действия браузера
     const touches = e.touches;
     for (let i = 0; i < touches.length; i++) {
@@ -78,17 +84,8 @@ const Clicker = () => {
           alt="Clicker"
           width={256}
           height={256}
-          onClick={(e) => {
-            if (e.type === 'click' || !e.touches) {
-              handleClick();
-            }
-          }}
-          onTouchStart={(e) => {
-            if (e.type === 'touchstart') {
-              handleTouchStart(e);
-            }
-          }}
-          
+          onClick={handleClick}
+          onTouchStart={handleTouchStart}
           style={{ cursor: 'pointer' }}
         />
       </div>
