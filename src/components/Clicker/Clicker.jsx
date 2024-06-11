@@ -4,52 +4,38 @@ import Button from '../Button/Button';
 import star from '../assets/star.png';
 
 const Clicker = () => {
-  const [coins, setCoins] = useState(0); // Количество монет
-  const [coinsToEarn, setCoinsToEarn] = useState(1000); // Количество оставшихся кликов
+  const [coins, setCoins] = useState(0); // количество монет
+  const [coinsToEarn, setCoinsToEarn] = useState(1000); // количество оставшихся кликов
 
-  const [multiTapCount, setMultiTapCount] = useState(1); // Удваиватель кликов
-  const [multiTapCost, setMultiTapCost] = useState(100); // Покупка удваивателя с указанной начальной ценой
+  const [multiTapCount, setMultiTapCount] = useState(1); // удваиватель кликов
+  const [multiTapCost, setMultiTapCost] = useState(100); // покупка удваивателя с указанной начальной ценой
 
-  const [energyEarn, setEnergyEarn] = useState(1); // Добываемая энергия в секунду
+  const [energyEarn, setEnergyEarn] = useState(1); // добываемая энергия в секунду
   const [energyChargerCost, setEnergyChargerCost] = useState(100);
 
-  const [isTouching, setIsTouching] = useState(false); // Состояние для отслеживания сенсорного события
-
-  // Обработчик клика
+  // КЛИКЕР_______________________________________________________________________________________________
   const handleClick = () => {
     if ((coinsToEarn - multiTapCount) >= 0) {
-      setCoins(coins + multiTapCount); // Увеличение монет при клике
-      setCoinsToEarn((prev) => prev - multiTapCount); // Уменьшение оставшихся кликов при нажатии
+      setCoins(coins + multiTapCount); // увеличение монет при клике
+      setCoinsToEarn((prev) => prev - multiTapCount); // уменьшение оставшихся кликов при нажатии
     }
   };
 
-  // Обработчик касания
-  const handleTouchStart = (e) => {
-    setIsTouching(true); // Установка состояния для сенсорного события
-    e.preventDefault(); // Предотвращаем нежелательные действия браузера
-  };
-
-  // Обработчик завершения касания
+  // Обработчик сенсорного экрана
   const handleTouchEnd = (e) => {
-    if (isTouching) {
-      const touches = e.changedTouches;
-      for (let i = 0; i < touches.length; i++) {
-        handleClick(); // Вызываем handleClick для каждого завершенного касания
-      }
-      setIsTouching(false); // Сбрасываем состояние после завершения касания
-    }
+    e.preventDefault(); // предотвращаем нежелательные действия браузера
+    handleClick(); // вызываем обработчик клика
   };
 
-  // Обработчик покупки мультитапа
+  // МАГАЗИН______________________________________________________________________________________________
   const handleBuyMultiTap = () => {
     if (coins >= multiTapCost) {
-      setCoins(coins - multiTapCost); // Уменьшение монет при покупке
-      setMultiTapCount((prev) => prev + 1); // Увеличение накликивания при покупке
-      setMultiTapCost((prev) => prev * 2); // Увеличение цены при покупке
+      setCoins(coins - multiTapCost); // уменьшение монет при покупке
+      setMultiTapCount((prev) => prev + 1); // увеличение накликивания при покупке
+      setMultiTapCost((prev) => prev * 2); // увеличение цены при покупке
     }
   };
 
-  // Обработчик покупки зарядного устройства энергии
   const buyEnergyCharger = () => {
     if (coins >= energyChargerCost) {
       setCoins(coins - energyChargerCost);
@@ -58,9 +44,9 @@ const Clicker = () => {
     }
   };
 
-  // Чит-панель: добавляет 1000 монет
+  // ЧИТ_ПАНЕЛЬ____________________________________________________________________________________________
   const plus1000coins = () => {
-    setCoins(coins + 1000);
+    setCoins(coins + 1000); // дает 1000 монет
   };
 
   // Логика увеличения оставшихся кликов в секунду
@@ -88,12 +74,7 @@ const Clicker = () => {
           alt="Clicker"
           width={256}
           height={256}
-          onClick={(e) => {
-            if (!isTouching) {
-              handleClick();
-            }
-          }}
-          onTouchStart={handleTouchStart}
+          onClick={handleClick}
           onTouchEnd={handleTouchEnd}
           style={{ cursor: 'pointer' }}
         />
