@@ -5,60 +5,111 @@ import star from '../assets/star.png';
 import { useTelegram } from '../../hooks/useTelegram';
 
 const Clicker = () => {
-  const { userID } = useTelegram();
-  const [coins, setCoins] = useState(0); // количество монет
-  const [coinsToEarn, setCoinsToEarn] = useState(1000); // количество оставшихся кликов
-
-  const [multiTapCount, setMultiTapCount] = useState(1); // удваиватель кликов
-  const [multiTapCost, setMultiTapCost] = useState(100); // покупка удваивателя с указанной начальной ценой
-
-  const [energyEarn, setEnergyEarn] = useState(1); // добываемая энергия в секунду
-  const [energyChargerCost, setEnergyChargerCost] = useState(100);
-
-  // КЛИКЕР_______________________________________________________________________________________________
-  const handleClick = () => {
-    if ((coinsToEarn - multiTapCount) >= 0) {
-      setCoins(coins + multiTapCount); // увеличение монет при клике
-      setCoinsToEarn((prev) => prev - multiTapCount); // уменьшение оставшихся кликов при нажатии
+    const { user, userData, saveUserData } = useTelegram();
+    const [coins, setCoins] = useState(0);
+    const [coinsToEarn, setCoinsToEarn] = useState(1000);
+    const [multiTapCount, setMultiTapCount] = useState(1);
+    const [multiTapCost, setMultiTapCost] = useState(100);
+    const [energyEarn, setEnergyEarn] = useState(1);
+    const [energyChargerCost, setEnergyChargerCost] = useState(100);
+  
+    useEffect(() => {
+      if (userData) {
+        setCoins(userData.coins);
+        setCoinsToEarn(userData.coinsToEarn);
+        setMultiTapCount(userData.multiTapCount);
+        setMultiTapCost(userData.multiTapCost);
+        setEnergyEarn(userData.energyEarn);
+        setEnergyChargerCost(userData.energyChargerCost);
+      }
+    }, [userData]);
+  
+    const saveData = () => {
+      saveUserData({
+        coins,
+        coinsToEarn,
+        multiTapCount,
+        multiTapCost,
+        energyEarn,
+        energyChargerCost,
+      });
+    };
+  
+    useEffect(() => {
+      // Сохранение данных каждые 10 секунд
+      const interval = setInterval(() => {
+        saveData();
+      }, 10000);
+  
+      // Сохранение данных при выходе из приложения
+      const handleBeforeUnload = (event) => {
+        saveData();
+      };
+  
+      window.addEventListener('beforeunload', handleBeforeUnload);
+  
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      };
+    }, [coins, coinsToEarn, multiTapCount, multiTapCost, energyEarn, energyChargerCost]);
+  
+    const handleClick = () => {
+      if ((coinsToEarn - multiTapCount) >= 0) {
+        const newCoins = coins + multiTapCount;
+        const newCoinsToEarn = coinsToEarn - multiTapCount;
+        setCoins(newCoins);
+      setCoinsToEarn(newCoinsToEarn);
+      saveData();
     }
   };
 
-  // Обработчик сенсорного экрана
   const handleTouchEnd = (e) => {
-    e.preventDefault(); // предотвращаем нежелательные действия браузера
-    handleClick(); // вызываем обработчик клика
+    e.preventDefault();
+    handleClick();
   };
 
-  // МАГАЗИН______________________________________________________________________________________________
   const handleBuyMultiTap = () => {
     if (coins >= multiTapCost) {
-      setCoins(coins - multiTapCost); // уменьшение монет при покупке
-      setMultiTapCount((prev) => prev + 1); // увеличение накликивания при покупке
-      setMultiTapCost((prev) => prev * 2); // увеличение цены при покупке
+      const newCoins = coins - multiTapCost;
+      const newMultiTapCount = multiTapCount + 1;
+      const newMultiTapCost = multiTapCost * 2;
+      setCoins(newCoins);
+      setMultiTapCount(newMultiTapCount);
+      setMultiTapCost(newMultiTapCost);
+      saveData();
     }
   };
 
   const buyEnergyCharger = () => {
     if (coins >= energyChargerCost) {
-      setCoins(coins - energyChargerCost);
-      setEnergyEarn(energyEarn + 1);
-      setEnergyChargerCost((prev) => prev * 2);
+      const newCoins = coins - energyChargerCost;
+      const newEnergyEarn = energyEarn + 1;
+      const newEnergyChargerCost = energyChargerCost * 2;
+      setCoins(newCoins);
+      setEnergyEarn(newEnergyEarn);
+      setEnergyChargerCost(newEnergyChargerCost);
+      saveData();
     }
   };
 
-  // ЧИТ_ПАНЕЛЬ____________________________________________________________________________________________
   const plus1000coins = () => {
-    setCoins(coins + 1000); // дает 1000 монет
+    const newCoins = coins + 1000;
+    setCoins(newCoins);
+    saveData();
   };
 
-  // Логика увеличения оставшихся кликов в секунду
   useEffect(() => {
     const interval = setInterval(() => {
-      setCoinsToEarn((coinsToEarn) => (coinsToEarn < 1000 ? coinsToEarn + energyEarn : 1000));
+      setCoinsToEarn((coinsToEarn) => {
+        const newCoinsToEarn = coinsToEarn < 1000 ? coinsToEarn + energyEarn : 1000;
+        saveUserData({ coinsToEarn: newCoinsToEarn });
+        return newCoinsToEarn;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [energyEarn]);
+  }, [energyEarn, saveUserData]);
 
   return (
     <div>
@@ -87,10 +138,6 @@ const Clicker = () => {
       <Button onClick={buyEnergyCharger}>Buy charging speed for {energyChargerCost} coins</Button>
       <span style={{ marginRight: '10px' }}></span>
       <Button onClick={plus1000coins}>+1000 coins</Button>
-
-      <div className="user-id">
-        <p>User ID: {userID}</p> {/* Выводим ID пользователя */}
-      </div>
     </div>
   );
 };
