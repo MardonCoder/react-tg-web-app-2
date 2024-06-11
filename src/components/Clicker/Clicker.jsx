@@ -13,26 +13,30 @@ const Clicker = () => {
   const [energyEarn, setEnergyEarn] = useState(1); // Добываемая энергия в секунду
   const [energyChargerCost, setEnergyChargerCost] = useState(100);
 
-  const [isTouch, setIsTouch] = useState(false); // Состояние для отслеживания сенсорного события
+  const [isTouching, setIsTouching] = useState(false); // Состояние для отслеживания сенсорного события
 
   // Обработчик клика
   const handleClick = () => {
-    if (!isTouch) {
-      if ((coinsToEarn - multiTapCount) >= 0) {
-        setCoins(coins + multiTapCount); // Увеличение монет при клике
-        setCoinsToEarn((prev) => prev - multiTapCount); // Уменьшение оставшихся кликов при нажатии
-      }
+    if ((coinsToEarn - multiTapCount) >= 0) {
+      setCoins(coins + multiTapCount); // Увеличение монет при клике
+      setCoinsToEarn((prev) => prev - multiTapCount); // Уменьшение оставшихся кликов при нажатии
     }
-    setIsTouch(false); // Сброс состояния после клика
   };
 
   // Обработчик касания
   const handleTouchStart = (e) => {
-    setIsTouch(true); // Установка состояния для сенсорного события
+    setIsTouching(true); // Установка состояния для сенсорного события
     e.preventDefault(); // Предотвращаем нежелательные действия браузера
-    const touches = e.touches;
-    for (let i = 0; i < touches.length; i++) {
-      handleClick(); // Вызываем handleClick для каждого касания
+  };
+
+  // Обработчик завершения касания
+  const handleTouchEnd = (e) => {
+    if (isTouching) {
+      const touches = e.changedTouches;
+      for (let i = 0; i < touches.length; i++) {
+        handleClick(); // Вызываем handleClick для каждого завершенного касания
+      }
+      setIsTouching(false); // Сбрасываем состояние после завершения касания
     }
   };
 
@@ -84,8 +88,13 @@ const Clicker = () => {
           alt="Clicker"
           width={256}
           height={256}
-          onClick={handleClick}
+          onClick={(e) => {
+            if (!isTouching) {
+              handleClick();
+            }
+          }}
           onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
           style={{ cursor: 'pointer' }}
         />
       </div>
